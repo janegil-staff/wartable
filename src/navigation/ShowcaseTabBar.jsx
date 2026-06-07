@@ -1,13 +1,13 @@
 // src/navigation/ShowcaseTabBar.jsx — custom bottom bar for the character view.
-// Four tabs (Overview · Gear / Progress · Code) flank an elevated center SHARE
-// FAB; tapping the FAB jumps to the Code tab (which is the share screen).
+// Four tabs (Overview · Calendar / Progress · Guild) flank an elevated center
+// SHARE FAB; tapping the FAB jumps to the Share screen.
 import React from "react";
 import { View, Pressable, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../theme/ThemeContext";
 
-const ICONS = { Overview: "person", Gear: "shield-half", Progress: "trending-up", Guild: "people" };
+const ICONS = { Overview: "person", Calendar: "calendar", Progress: "trending-up", Guild: "people" };
 
 export default function ShowcaseTabBar({ state, descriptors, navigation, shareTarget, parentNav }) {
   const { theme } = useTheme();

@@ -1,15 +1,15 @@
 // src/screens/ShowcaseScreen.jsx — character view with 4 bottom tabs:
-// Overview · Gear · Progress · Code. Fetches once, feeds all tabs.
+// Overview · Calendar · Progress · Guild. Fetches once, feeds all tabs.
 import React from "react";
-import { View, Text, ActivityIndicator, Pressable, StyleSheet, Alert } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../theme/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useCharacter } from "../hooks/useCharacter";
-import { OverviewTab, GearTab, ProgressTab } from "../components/showcaseParts";
+import { OverviewTab, ProgressTab } from "../components/showcaseParts";
 import GuildScreen from "../screens/GuildScreen";
+import CalendarScreen from "../screens/CalendarScreen";
 import ShowcaseTabBar from "../navigation/ShowcaseTabBar";
 
 const Tab = createBottomTabNavigator();
@@ -28,6 +28,8 @@ export default function ShowcaseScreen({ route, navigation }) {
   }
 
   const c = q.data;
+  const charKey = `${c.region}-${c.realm}-${c.name}`;
+
   const openGuild = () => {
     const g = c.guild;
     if (!g?.name) return;
@@ -36,7 +38,7 @@ export default function ShowcaseScreen({ route, navigation }) {
     });
   };
   const panel = (Comp) => () => (
-    <View style={{ flex: 1, backgroundColor: theme.bg }}>
+    <View key={charKey} style={{ flex: 1, backgroundColor: theme.bg }}>
       <Comp c={c} theme={theme} t={t} onOpenGuild={openGuild} />
     </View>
   );
@@ -44,16 +46,26 @@ export default function ShowcaseScreen({ route, navigation }) {
   return (
     <Tab.Navigator
       tabBar={(props) => <ShowcaseTabBar {...props} shareTarget={{ region: c.region ?? region, realm: c.realm ?? realm, name: c.name ?? name }} parentNav={navigation} />}
-      screenOptions={({ route }) => ({
-        headerShown: false,
-      })}
+      screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Overview" options={{ title: t("appName") }} component={panel(OverviewTab)} />
-      <Tab.Screen name="Gear" options={{ title: t("gear") }} component={panel(GearTab)} />
+      <Tab.Screen name="Calendar" options={{ title: t("calendar") || "Calendar" }}>
+        {() => (
+          <View key={charKey} style={{ flex: 1, backgroundColor: theme.bg }}>
+            <CalendarScreen route={{ params: {
+              region: c.region ?? region,
+              realm: c.realm ?? realm,
+              name: c.name ?? name,
+              guildRealm: c.guild?.realm || c.realm,
+              guildName: c.guild?.name,
+            } }} />
+          </View>
+        )}
+      </Tab.Screen>
       <Tab.Screen name="Progress" options={{ title: t("mythicPlus") }} component={panel(ProgressTab)} />
       <Tab.Screen name="Guild" options={{ title: t("guild") || "Guild" }}>
         {() => (
-          <View style={{ flex: 1, backgroundColor: theme.bg }}>
+          <View key={charKey} style={{ flex: 1, backgroundColor: theme.bg }}>
             <GuildScreen guild={{ region: c.region, realm: c.guild?.realm || c.realm, name: c.guild?.name }} />
           </View>
         )}
@@ -64,7 +76,4 @@ export default function ShowcaseScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  fab: { position: "absolute", right: 16, bottom: 16, width: 56, height: 56, borderRadius: 28,
-    alignItems: "center", justifyContent: "center",
-    shadowOpacity: 0.5, shadowRadius: 12, shadowOffset: { width: 0, height: 4 }, elevation: 6 },
 });
