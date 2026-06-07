@@ -9,7 +9,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useCharacter } from "../hooks/useCharacter";
 import { OverviewTab, GearTab, ProgressTab } from "../components/showcaseParts";
-import CodeTab from "../components/CodeTab";
+import GuildScreen from "../screens/GuildScreen";
 import ShowcaseTabBar from "../navigation/ShowcaseTabBar";
 
 const Tab = createBottomTabNavigator();
@@ -43,7 +43,7 @@ export default function ShowcaseScreen({ route, navigation }) {
 
   return (
     <Tab.Navigator
-      tabBar={(props) => <ShowcaseTabBar {...props} />}
+      tabBar={(props) => <ShowcaseTabBar {...props} shareTarget={{ region: c.region ?? region, realm: c.realm ?? realm, name: c.name ?? name }} parentNav={navigation} />}
       screenOptions={({ route }) => ({
         headerShown: false,
       })}
@@ -51,7 +51,13 @@ export default function ShowcaseScreen({ route, navigation }) {
       <Tab.Screen name="Overview" options={{ title: t("appName") }} component={panel(OverviewTab)} />
       <Tab.Screen name="Gear" options={{ title: t("gear") }} component={panel(GearTab)} />
       <Tab.Screen name="Progress" options={{ title: t("mythicPlus") }} component={panel(ProgressTab)} />
-      <Tab.Screen name="Code" options={{ title: t("shareCode") || "Code" }} component={panel(CodeTab)} />
+      <Tab.Screen name="Guild" options={{ title: t("guild") || "Guild" }}>
+        {() => (
+          <View style={{ flex: 1, backgroundColor: theme.bg }}>
+            <GuildScreen guild={{ region: c.region, realm: c.guild?.realm || c.realm, name: c.guild?.name }} />
+          </View>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }

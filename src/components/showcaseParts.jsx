@@ -97,6 +97,42 @@ export function OverviewTab({ c, theme, t, onOpenGuild }) {
           ))}
         </Section>
       ) : null}
+
+      {c.collections ? (
+        <Section theme={theme} icon="ribbon" title={t("collections") || "Collections"}>
+          <View style={{ flexDirection: "row" }}>
+            {[["mounts", c.collections.mounts], ["pets", c.collections.pets], ["toys", c.collections.toys]].map(([k, v]) => (
+              <View key={k} style={{ flex: 1, alignItems: "center" }}>
+                <Text style={{ color: theme.text, fontWeight: "900", fontSize: 20 }}>{v}</Text>
+                <Text style={{ color: theme.textMuted, fontSize: 11, textTransform: "uppercase" }}>{t(k) || k}</Text>
+              </View>
+            ))}
+          </View>
+        </Section>
+      ) : null}
+
+      {c.titles?.length ? (
+        <Section theme={theme} icon="star" title={`${t("titles") || "Titles"} · ${c.titles.length}`}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {c.titles.slice(0, 30).map((tt, i) => (
+              <View key={i} style={[styles.chip, { borderColor: theme.border, backgroundColor: theme.bg }]}>
+                <Text style={{ color: theme.text, fontSize: 12 }}>{tt}</Text>
+              </View>
+            ))}
+          </View>
+        </Section>
+      ) : null}
+
+      {c.reputations?.length ? (
+        <Section theme={theme} icon="people" title={`${t("reputations") || "Reputations"} · ${c.reputations.length}`}>
+          {c.reputations.slice(0, 12).map((rp, i) => (
+            <View key={i} style={[styles.row, { borderBottomColor: theme.border }]}>
+              <Text style={{ color: theme.text, flex: 1, fontWeight: "600" }} numberOfLines={1}>{rp.faction}</Text>
+              <Text style={{ color: theme.textMuted, fontSize: 12 }}>{rp.standing}</Text>
+            </View>
+          ))}
+        </Section>
+      ) : null}
     </ScrollView>
   );
 }
@@ -212,4 +248,5 @@ const styles = StyleSheet.create({
   gearIcon: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
   gearIlvl: { backgroundColor: "rgba(0,0,0,0.7)", paddingHorizontal: 2 },
   gearIlvlText: { color: "#fff", fontSize: 9, fontWeight: "800", textAlign: "center" },
+  chip: { borderWidth: 1, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 5 },
 });

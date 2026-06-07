@@ -9,10 +9,12 @@ import { useTheme } from "../theme/ThemeContext";
 import SignInScreen from "../screens/SignInScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ShowcaseScreen from "../screens/ShowcaseScreen";
+import ShareScreen from "../screens/ShareScreen";
 import ViewCodeScreen from "../screens/ViewCodeScreen";
 import GuildScreen from "../screens/GuildScreen";
-import EventsScreen from "../screens/EventsScreen";
 import ThisWeekScreen from "../screens/ThisWeekScreen";
+import AuctionScreen from "../screens/AuctionScreen";
+import LeaderboardScreen from "../screens/LeaderboardScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import LanguagePickerScreen from "../screens/LanguagePickerScreen";
 import TermsScreen from "../screens/TermsScreen";
@@ -46,10 +48,12 @@ export default function RootNavigator() {
         <>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Showcase" component={ShowcaseScreen} options={withGear} />
+          <Stack.Screen name="Share" component={ShareScreen} options={withGear} />
           <Stack.Screen name="ViewCode" component={ViewCodeScreen} options={withGear} />
           <Stack.Screen name="Guild" component={GuildScreen} options={withGear} />
-          <Stack.Screen name="Events" component={EventsScreen} options={withGear} />
           <Stack.Screen name="ThisWeek" component={ThisWeekScreen} options={withGear} />
+          <Stack.Screen name="Auctions" component={AuctionScreen} options={withGear} />
+          <Stack.Screen name="Leaderboards" component={LeaderboardScreen} options={withGear} />
           <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
           <Stack.Screen name="LanguagePicker" component={LanguagePickerScreen} options={{ headerShown: true, title: "", headerStyle: { backgroundColor: theme.bg }, headerTintColor: theme.text, headerShadowVisible: false }} />
           <Stack.Screen name="Terms" component={TermsScreen} options={{ headerShown: true, title: "", headerStyle: { backgroundColor: theme.bg }, headerTintColor: theme.text, headerShadowVisible: false }} />

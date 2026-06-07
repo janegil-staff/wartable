@@ -7,9 +7,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "../theme/ThemeContext";
 
-const ICONS = { Overview: "person", Gear: "shield-half", Progress: "trending-up", Code: "card" };
+const ICONS = { Overview: "person", Gear: "shield-half", Progress: "trending-up", Guild: "people" };
 
-export default function ShowcaseTabBar({ state, descriptors, navigation }) {
+export default function ShowcaseTabBar({ state, descriptors, navigation, shareTarget, parentNav }) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -35,7 +35,7 @@ export default function ShowcaseTabBar({ state, descriptors, navigation }) {
     );
   };
 
-  const goShare = () => navigation.navigate("Code");
+  const goShare = () => (parentNav ?? navigation).navigate("Share", shareTarget);
 
   return (
     <View style={[styles.wrap, { backgroundColor: theme.surface, borderTopColor: theme.border, paddingBottom: insets.bottom }]}>

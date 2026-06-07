@@ -7,7 +7,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useThisWeek } from "../hooks/useThisWeek";
 
-export default function ThisWeekScreen() {
+export default function ThisWeekScreen({ navigation }) {
   const { theme } = useTheme();
   const { t } = useTranslation();
   const q = useThisWeek("eu");
@@ -46,6 +46,19 @@ export default function ThisWeekScreen() {
             </View>
           </>
         )}
+
+            <Pressable onPress={() => navigation.navigate("Auctions")}
+              style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border, flexDirection: "row", alignItems: "center", gap: 10 }]}>
+              <Ionicons name="pricetags" size={20} color={theme.accent} />
+              <Text style={{ color: theme.text, fontWeight: "800", fontSize: 16, flex: 1 }}>{t("auctionHouse") || "Auction House"}</Text>
+              <Ionicons name="chevron-forward" size={18} color={theme.textMuted} />
+            </Pressable>
+            <Pressable onPress={() => navigation.navigate("Leaderboards")}
+              style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border, flexDirection: "row", alignItems: "center", gap: 10 }]}>
+              <Ionicons name="trophy" size={20} color={theme.accent} />
+              <Text style={{ color: theme.text, fontWeight: "800", fontSize: 16, flex: 1 }}>{t("leaderboards") || "Leaderboards"}</Text>
+              <Ionicons name="chevron-forward" size={18} color={theme.textMuted} />
+            </Pressable>
       </ScrollView>
     </SafeAreaView>
   );

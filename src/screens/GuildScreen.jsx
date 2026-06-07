@@ -5,15 +5,36 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../theme/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
 import { useGuild } from "../hooks/useGuild";
 import { classColor, factionTheme } from "../theme/wow";
 import FactionEmblem from "../components/FactionEmblem";
 
-export default function GuildScreen({ route, navigation }) {
+// Blizzard exposes only a rank NUMBER (0 = GM), not the guild's custom rank
+// names. We map the common conventions; deeper ranks show as "Rank N".
+function rankName(rank, t) {
+  if (rank === 0) return t("guildMaster") || "Guild Master";
+  if (rank === 1) return t("officer") || "Officer";
+  if (rank == null) return "";
+  return `${t("rank") || "Rank"} ${rank}`;
+}
+
+export default function GuildScreen({ route, navigation, guild: guildProp }) {
   const { theme } = useTheme();
   const { t } = useTranslation();
-  const { region, realm, name } = route.params ?? {};
+  const params = route?.params ?? {};
+  const region = guildProp?.region ?? params.region;
+  const realm = guildProp?.realm ?? params.realm;
+  const name = guildProp?.name ?? params.name;
+  const nav = useNavigation();
   const q = useGuild({ region, realm, name });
+
+  const openMember = (memberName) => {
+    if (!memberName) return;
+    // members are on the guild's realm; push a fresh Showcase for them
+    nav.push?.("Showcase", { region, realm, name: memberName })
+      ?? nav.navigate("Showcase", { region, realm, name: memberName });
+  };
 
   if (q.isLoading) return <SafeAreaView style={[styles.center, { backgroundColor: theme.bg }]}><ActivityIndicator color={theme.accent} /></SafeAreaView>;
   if (q.isError || !q.data) return <SafeAreaView style={[styles.center, { backgroundColor: theme.bg }]}><Text style={{ color: theme.danger }}>{t("notFound")}</Text></SafeAreaView>;
@@ -38,12 +59,6 @@ export default function GuildScreen({ route, navigation }) {
                   <Text style={{ color: theme.text, fontSize: 22, fontWeight: "900" }} numberOfLines={1}>{g.name}</Text>
                   <Text style={{ color: theme.textMuted }}>{g.realmName} · {g.memberCount} {t("members") || "members"}</Text>
                 </View>
-                <Pressable
-                  onPress={() => navigation.navigate("Events", { region, realm, name })}
-                  style={{ flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, backgroundColor: theme.accent }}>
-                  <Ionicons name="calendar" size={15} color={theme.accentText} />
-                  <Text style={{ color: theme.accentText, fontWeight: "800", fontSize: 13 }}>{t("events") || "Events"}</Text>
-                </Pressable>
               </View>
             </View>
 
@@ -68,12 +83,23 @@ export default function GuildScreen({ route, navigation }) {
           </View>
         }
         renderItem={({ item }) => (
-          <View style={[styles.memberRow, { borderBottomColor: theme.border }]}>
-            <Text style={{ color: classColor(item.class), fontWeight: "700", flex: 1 }} numberOfLines={1}>
-              {item.rank === 0 ? "★ " : ""}{item.name}
-            </Text>
-            <Text style={{ color: theme.textMuted, fontSize: 12 }}>{item.class} · {item.level}</Text>
-          </View>
+          <Pressable onPress={() => openMember(item.name)} style={[styles.memberRow, { borderBottomColor: theme.border }]}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: classColor(item.class), fontWeight: "700" }} numberOfLines={1}>
+                {item.rank === 0 ? "★ " : ""}{item.name}
+              </Text>
+              <Text style={{ color: theme.textMuted, fontSize: 12 }} numberOfLines={1}>
+                {rankName(item.rank, t)}
+              </Text>
+            </View>
+            <View style={{ alignItems: "flex-end" }}>
+              <Text style={{ color: theme.text, fontSize: 13, fontWeight: "600" }} numberOfLines={1}>
+                {[item.race, item.class].filter(Boolean).join(" ")}
+              </Text>
+              <Text style={{ color: theme.textMuted, fontSize: 12 }}>{t("level") || "Lv"} {item.level}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color={theme.textMuted} style={{ marginLeft: 6 }} />
+          </Pressable>
         )}
       />
     </SafeAreaView>
