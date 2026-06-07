@@ -290,7 +290,7 @@ function ItemDetailModal({ item, theme, t, onClose }) {
 }
 
 // Gear grid + item list, each item tappable. Shared by Overview and GearTab.
-function GearContent({ c, theme, t }) {
+export function GearContent({ c, theme, t }) {
   const [selected, setSelected] = React.useState(null);
   const items = c.equipment ?? [];
   return (

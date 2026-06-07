@@ -1,8 +1,8 @@
 // src/components/GuildMemberModal.jsx — full scorecard modal for a guild member.
 // Leads with three co-equal headline stats (Mythic+ · Item Level · Raid), then
-// best M+ runs, professions, and full per-raid/per-difficulty boss lists, then
-// a soft "last seen" line. Opens instantly from roster data, fetches the full
-// profile via useCharacter (React Query caches it, so re-taps are instant).
+// best M+ runs, gear (tappable items), professions, and full per-raid boss
+// lists, then a soft "last seen" line. Opens instantly from roster data,
+// fetches the full profile via useCharacter (React Query caches it).
 import React from "react";
 import {
   View,
@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { useCharacter } from "../hooks/useCharacter";
 import { classColor, factionTheme } from "../theme/wow";
 import FactionEmblem from "./FactionEmblem";
+import { GearContent } from "./showcaseParts";
 
 var DIFF_ORDER = ["RAID FINDER", "NORMAL", "HEROIC", "MYTHIC"];
 var DIFF_SHORT = {
@@ -63,7 +64,6 @@ function lastSeen(ts, t) {
 }
 
 // Highest cleared difficulty + boss count, for the headline raid number.
-// Backend shape: raids[].modes[] = { difficulty, completed, total, bosses[] }.
 function topRaidProgress(raids) {
   if (!raids || !raids.length) return null;
   var best = null;
@@ -273,6 +273,31 @@ export default function GuildMemberModal({
                   </View>
                 ) : null}
 
+                {/* GEAR — tappable items, same detail modal as the showcase */}
+                {c && c.equipment && c.equipment.length ? (
+                  <View
+                    style={[
+                      styles.card,
+                      {
+                        backgroundColor: theme.surface,
+                        borderColor: theme.border,
+                      },
+                    ]}
+                  >
+                    <View style={styles.cardHead}>
+                      <Ionicons
+                        name="shield-half"
+                        size={15}
+                        color={theme.accent}
+                      />
+                      <Text style={[styles.cardTitle, { color: theme.text }]}>
+                        {(t("gear") || "Gear") + " · " + c.equipment.length}
+                      </Text>
+                    </View>
+                    <GearContent c={c} theme={theme} t={t} />
+                  </View>
+                ) : null}
+
                 {/* PROFESSIONS — name + skill/max */}
                 {c && c.professions && c.professions.length ? (
                   <View
@@ -388,15 +413,12 @@ export default function GuildMemberModal({
                               );
                             })}
                           </View>
-                          {/* bosses live inside each mode; show the highest difficulty
-                              that has boss data so we don't repeat the same bosses */}
                           {(function () {
                             var modes = raid.modes || [];
                             var withBosses = modes.filter(function (m) {
                               return m.bosses && m.bosses.length;
                             });
                             if (!withBosses.length) return null;
-                            // pick the highest-difficulty mode that has bosses
                             var topMode = withBosses.reduce(function (acc, m) {
                               var rank = DIFF_ORDER.indexOf(
                                 (m.difficulty || "").toUpperCase(),
