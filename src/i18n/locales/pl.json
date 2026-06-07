@@ -91,5 +91,7 @@
   "auctionHint": "Wpisz ID realmu, aby przeglądać aukcje.",
   "guildMaster": "Mistrz gildii",
   "officer": "Oficer",
-  "rank": "Ranga"
+  "rank": "Ranga",
+  "shareFailed": "Nie udało się utworzyć kodu. Dotknij Generuj.",
+  "perDungeon": "Na loch"
 }

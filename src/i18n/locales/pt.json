@@ -91,5 +91,7 @@
   "auctionHint": "Insere um ID de reino para ver leilões.",
   "guildMaster": "Mestre da guilda",
   "officer": "Oficial",
-  "rank": "Posto"
+  "rank": "Posto",
+  "shareFailed": "Não foi possível criar o código. Toca em Gerar.",
+  "perDungeon": "Por masmorra"
 }

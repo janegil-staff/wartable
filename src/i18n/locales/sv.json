@@ -91,5 +91,7 @@
   "auctionHint": "Ange ett realm-id för att bläddra i auktioner.",
   "guildMaster": "Gillesmästare",
   "officer": "Officer",
-  "rank": "Rang"
+  "rank": "Rang",
+  "shareFailed": "Kunde inte skapa kod. Tryck Generera.",
+  "perDungeon": "Per dungeon"
 }

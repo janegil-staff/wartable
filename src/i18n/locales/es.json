@@ -91,5 +91,7 @@
   "auctionHint": "Introduce un ID de reino para ver subastas.",
   "guildMaster": "Maestro de hermandad",
   "officer": "Oficial",
-  "rank": "Rango"
+  "rank": "Rango",
+  "shareFailed": "No se pudo crear el código. Toca Generar.",
+  "perDungeon": "Por mazmorra"
 }

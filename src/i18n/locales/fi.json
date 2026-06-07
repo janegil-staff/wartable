@@ -91,5 +91,7 @@
   "auctionHint": "Anna realmin id selataksesi huutokauppoja.",
   "guildMaster": "Killan mestari",
   "officer": "Upseeri",
-  "rank": "Arvo"
+  "rank": "Arvo",
+  "shareFailed": "Koodin luonti epäonnistui. Napauta Luo.",
+  "perDungeon": "Per luolasto"
 }

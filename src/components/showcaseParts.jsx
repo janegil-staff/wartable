@@ -166,21 +166,48 @@ export function GearTab({ c, theme, t }) {
 
 // ── PROGRESS (M+ & raids) ──
 export function ProgressTab({ c, theme, t }) {
+  const fmtTime = (ms) => {
+    if (!ms) return null;
+    const s = Math.floor(ms / 1000), m = Math.floor(s / 60);
+    return `${m}:${String(s % 60).padStart(2, "0")}`;
+  };
   return (
     <ScrollView style={{ backgroundColor: theme.bg }} contentContainerStyle={{ padding: 16, gap: 16 }}>
       <Section theme={theme} icon="key" title={t("mythicPlus")}>
         {c.mythicPlus?.currentRating ? (
-          <Text style={{ color: theme.accent, fontSize: 28, fontWeight: "900", marginBottom: 8 }}>
-            {c.mythicPlus.currentRating}
+          <Text style={{ color: c.mythicPlus.ratingColor || theme.accent, fontSize: 28, fontWeight: "900", marginBottom: 8 }}>
+            {Math.round(c.mythicPlus.currentRating)}
           </Text>
         ) : null}
         {c.mythicPlus?.bestRuns?.length ? c.mythicPlus.bestRuns.map((r, i) => (
-          <View key={i} style={[styles.row, { borderBottomColor: theme.border }]}>
-            <Text style={{ color: theme.text, flex: 1, fontWeight: "600" }} numberOfLines={1}>{r.dungeon}</Text>
-            <Text style={{ color: r.completed ? theme.success : theme.textMuted, fontWeight: "800" }}>+{r.level}</Text>
+          <View key={i} style={[styles.row, { borderBottomColor: theme.border, alignItems: "flex-start" }]}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: theme.text, fontWeight: "600" }} numberOfLines={1}>{r.dungeon}</Text>
+              <Text style={{ color: theme.textMuted, fontSize: 11 }} numberOfLines={1}>
+                {[fmtTime(r.duration) && `${fmtTime(r.duration)}`, (r.affixes ?? []).join(", ")].filter(Boolean).join(" · ")}
+              </Text>
+            </View>
+            <Text style={{ color: r.completed ? theme.success : theme.textMuted, fontWeight: "800" }}>
+              +{r.level}{r.completed ? "" : " ✗"}
+            </Text>
           </View>
         )) : <Text style={{ color: theme.textMuted }}>{t("noRuns")}</Text>}
+
+        {c.mythicPlus?.perDungeon?.length ? (
+          <View style={{ marginTop: 10 }}>
+            <Text style={{ color: theme.textMuted, fontSize: 11, fontWeight: "700", textTransform: "uppercase", marginBottom: 4 }}>
+              {t("perDungeon") || "Per dungeon"}
+            </Text>
+            {c.mythicPlus.perDungeon.map((d, i) => (
+              <View key={i} style={{ flexDirection: "row", justifyContent: "space-between", paddingVertical: 3 }}>
+                <Text style={{ color: theme.text, fontSize: 13 }} numberOfLines={1}>{d.dungeon}</Text>
+                <Text style={{ color: theme.textMuted, fontSize: 13, fontWeight: "700" }}>{Math.round(d.rating)}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
       </Section>
+
       {c.pvp ? (
         <Section theme={theme} icon="flag" title={t("pvp") || "PvP"}>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
@@ -193,21 +220,58 @@ export function ProgressTab({ c, theme, t }) {
           </View>
         </Section>
       ) : null}
+
       {c.raids?.length ? (
         <Section theme={theme} icon="skull" title={t("raids")}>
           {c.raids.map((raid, i) => (
-            <View key={i} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: theme.border }}>
-              <Text style={{ color: theme.text, fontWeight: "700" }}>{raid.name}</Text>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 4 }}>
-                {(raid.modes ?? []).map((m, j) => (
-                  <Text key={j} style={{ color: theme.textMuted, fontSize: 12 }}>{m.difficulty}: {m.completed}/{m.total}</Text>
-                ))}
-              </View>
-            </View>
+            <RaidInstance key={i} raid={raid} theme={theme} t={t} />
           ))}
         </Section>
       ) : null}
     </ScrollView>
+  );
+}
+
+// One raid instance: difficulty summary + a tappable per-boss checklist.
+function RaidInstance({ raid, theme, t }) {
+  const [open, setOpen] = React.useState(false);
+  // pick the highest difficulty that has any bosses, to show its boss list
+  const modes = raid.modes ?? [];
+  const detailMode = [...modes].reverse().find((m) => (m.bosses ?? []).length) ?? modes[modes.length - 1];
+
+  return (
+    <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: theme.border }}>
+      <Pressable onPress={() => setOpen((o) => !o)} style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={{ color: theme.text, fontWeight: "700", flex: 1 }}>{raid.name}</Text>
+        <Ionicons name={open ? "chevron-up" : "chevron-down"} size={16} color={theme.textMuted} />
+      </Pressable>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 4 }}>
+        {modes.map((m, j) => (
+          <Text key={j} style={{ color: theme.textMuted, fontSize: 12 }}>{m.difficulty}: {m.completed}/{m.total}</Text>
+        ))}
+      </View>
+
+      {open && detailMode ? (
+        <View style={{ marginTop: 8, gap: 4 }}>
+          <Text style={{ color: theme.textMuted, fontSize: 11, fontWeight: "700", textTransform: "uppercase" }}>
+            {detailMode.difficulty}
+          </Text>
+          {(detailMode.bosses ?? []).map((b, k) => (
+            <View key={k} style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 3 }}>
+              <Ionicons
+                name={b.killed ? "checkmark-circle" : "ellipse-outline"}
+                size={15}
+                color={b.killed ? theme.success : theme.textMuted}
+              />
+              <Text style={{ color: b.killed ? theme.text : theme.textMuted, flex: 1, fontSize: 13 }} numberOfLines={1}>
+                {b.name}
+              </Text>
+              {b.kills ? <Text style={{ color: theme.textMuted, fontSize: 11 }}>×{b.kills}</Text> : null}
+            </View>
+          ))}
+        </View>
+      ) : null}
+    </View>
   );
 }
 

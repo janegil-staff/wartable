@@ -91,5 +91,7 @@
   "auctionHint": "Enter a connected-realm id to browse auctions.",
   "guildMaster": "Guild Master",
   "officer": "Officer",
-  "rank": "Rank"
+  "rank": "Rank",
+  "shareFailed": "Couldn't create a code. Tap Generate to retry.",
+  "perDungeon": "Per dungeon"
 }

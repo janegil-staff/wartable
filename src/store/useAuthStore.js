@@ -36,7 +36,22 @@ export const useAuthStore = create((set) => ({
     } catch {}
   },
 
-  continueManual: (role) => set({ user: { id: "guest", role }, role }),
+  // Guest / manual: hit the backend /auth/manual to get a REAL token so
+  // auth-protected actions (sharing, etc.) work. Falls back to a local-only
+  // guest if the backend is unreachable (browse still works; sharing won't).
+  continueManual: async (role) => {
+    try {
+      const { default: client } = await import("../api/client");
+      const { data } = await client.post("/auth/manual", { displayName: "Guest" });
+      if (data?.token) {
+        try { await SecureStore.setItemAsync(TOKEN_KEY, data.token); } catch {}
+        set({ token: data.token, user: { id: data.user?.id ?? "guest", role, characters: [] }, role });
+        return;
+      }
+    } catch {}
+    // offline / backend down — local guest only
+    set({ user: { id: "guest", role, characters: [] }, role });
+  },
 
   setRole: (role) => set({ role }),
 

@@ -1,5 +1,6 @@
 // src/screens/GuildScreen.jsx — guild header + roster + recent activity.
-import React from "react";
+// Tapping a member opens a quick-peek modal; "View full showcase" navigates.
+import React, { useState } from "react";
 import { View, Text, FlatList, Pressable, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useGuild } from "../hooks/useGuild";
 import { classColor, factionTheme } from "../theme/wow";
 import FactionEmblem from "../components/FactionEmblem";
+import GuildMemberModal from "../components/GuildMemberModal";
 
 // Blizzard exposes only a rank NUMBER (0 = GM), not the guild's custom rank
 // names. We map the common conventions; deeper ranks show as "Rank N".
@@ -29,11 +31,20 @@ export default function GuildScreen({ route, navigation, guild: guildProp }) {
   const nav = useNavigation();
   const q = useGuild({ region, realm, name });
 
-  const openMember = (memberName) => {
-    if (!memberName) return;
+  // Modal state: which member is being peeked at.
+  const [selected, setSelected] = useState(null);
+
+  const openMember = (member) => {
+    if (!member?.name) return;
+    setSelected(member);
+  };
+
+  const openShowcase = (member) => {
+    setSelected(null);
+    if (!member?.name) return;
     // members are on the guild's realm; push a fresh Showcase for them
-    nav.push?.("Showcase", { region, realm, name: memberName })
-      ?? nav.navigate("Showcase", { region, realm, name: memberName });
+    nav.push?.("Showcase", { region, realm, name: member.name })
+      ?? nav.navigate("Showcase", { region, realm, name: member.name });
   };
 
   if (q.isLoading) return <SafeAreaView style={[styles.center, { backgroundColor: theme.bg }]}><ActivityIndicator color={theme.accent} /></SafeAreaView>;
@@ -83,7 +94,7 @@ export default function GuildScreen({ route, navigation, guild: guildProp }) {
           </View>
         }
         renderItem={({ item }) => (
-          <Pressable onPress={() => openMember(item.name)} style={[styles.memberRow, { borderBottomColor: theme.border }]}>
+          <Pressable onPress={() => openMember(item)} style={[styles.memberRow, { borderBottomColor: theme.border }]}>
             <View style={{ flex: 1 }}>
               <Text style={{ color: classColor(item.class), fontWeight: "700" }} numberOfLines={1}>
                 {item.rank === 0 ? "★ " : ""}{item.name}
@@ -101,6 +112,15 @@ export default function GuildScreen({ route, navigation, guild: guildProp }) {
             <Ionicons name="chevron-forward" size={16} color={theme.textMuted} style={{ marginLeft: 6 }} />
           </Pressable>
         )}
+      />
+
+      <GuildMemberModal
+        visible={!!selected}
+        member={selected}
+        region={region}
+        realm={realm}
+        onClose={() => setSelected(null)}
+        onOpenShowcase={openShowcase}
       />
     </SafeAreaView>
   );

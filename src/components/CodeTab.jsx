@@ -18,12 +18,14 @@ export default function CodeTab({ c, theme, t }) {
   const create = useCreateShare();
   const [code, setCode] = useState(null);
   const [remaining, setRemaining] = useState(TTL);
+  const [err, setErr] = useState(false);
   const sweep = useRef(new Animated.Value(1)).current; // 1 → 0 over TTL
   const tick = useRef(null);
 
   const SIZE = 200, STROKE = 12, R = (SIZE - STROKE) / 2, C = 2 * Math.PI * R;
 
   const generate = async () => {
+    setErr(false);
     try {
       const res = await create.mutateAsync({
         region: c.region ?? "eu", realmSlug: c.realm, name: c.name,
@@ -46,7 +48,9 @@ export default function CodeTab({ c, theme, t }) {
         setRemaining(left);
         if (left <= 0) clearInterval(tick.current);
       }, 1000);
-    } catch {}
+    } catch {
+      setErr(true);
+    }
   };
 
   useEffect(() => {
@@ -68,6 +72,8 @@ export default function CodeTab({ c, theme, t }) {
           </>
         ) : create.isPending ? (
           <ActivityIndicator color={theme.accent} />
+        ) : err ? (
+          <Text style={{ color: theme.danger, textAlign: "center" }}>{t("shareFailed") || "Couldn't create a code. Tap Generate to retry."}</Text>
         ) : (
           <Text style={{ color: theme.textMuted }}>{t("tapGenerate") || "Generate a code to share"}</Text>
         )}

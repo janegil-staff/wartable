@@ -91,5 +91,7 @@
   "auctionHint": "Entrez un ID de royaume pour parcourir les ventes.",
   "guildMaster": "Maître de guilde",
   "officer": "Officier",
-  "rank": "Rang"
+  "rank": "Rang",
+  "shareFailed": "Échec de création du code. Touchez Générer.",
+  "perDungeon": "Par donjon"
 }

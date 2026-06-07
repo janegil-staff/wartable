@@ -91,5 +91,7 @@
   "auctionHint": "Voer een realm-id in om veilingen te bekijken.",
   "guildMaster": "Gildemeester",
   "officer": "Officier",
-  "rank": "Rang"
+  "rank": "Rang",
+  "shareFailed": "Kon geen code maken. Tik op Genereren.",
+  "perDungeon": "Per kerker"
 }

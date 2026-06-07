@@ -91,5 +91,7 @@
   "auctionHint": "Skriv inn et tilkoblet realm-id for å søke i auksjoner.",
   "guildMaster": "Gildemester",
   "officer": "Offiser",
-  "rank": "Rang"
+  "rank": "Rang",
+  "shareFailed": "Kunne ikke lage kode. Trykk Generer for å prøve igjen.",
+  "perDungeon": "Per fangehull"
 }

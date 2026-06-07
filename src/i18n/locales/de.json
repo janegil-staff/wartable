@@ -91,5 +91,7 @@
   "auctionHint": "Realm-ID eingeben, um Auktionen zu durchsuchen.",
   "guildMaster": "Gildenmeister",
   "officer": "Offizier",
-  "rank": "Rang"
+  "rank": "Rang",
+  "shareFailed": "Code fehlgeschlagen. Tippe auf Generieren.",
+  "perDungeon": "Pro Verlies"
 }

@@ -91,5 +91,7 @@
   "auctionHint": "Inserisci un ID reame per sfogliare le aste.",
   "guildMaster": "Maestro di gilda",
   "officer": "Ufficiale",
-  "rank": "Grado"
+  "rank": "Grado",
+  "shareFailed": "Impossibile creare il codice. Tocca Genera.",
+  "perDungeon": "Per dungeon"
 }

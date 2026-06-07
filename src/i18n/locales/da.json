@@ -91,5 +91,7 @@
   "auctionHint": "Indtast et realm-id for at gennemse auktioner.",
   "guildMaster": "Lavsmester",
   "officer": "Officer",
-  "rank": "Rang"
+  "rank": "Rang",
+  "shareFailed": "Kunne ikke lave kode. Tryk Generer.",
+  "perDungeon": "Per dungeon"
 }
