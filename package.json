@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+<<<<<<< HEAD
     "@expo/vector-icons": "^15.0.2",
+=======
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
     "@react-navigation/bottom-tabs": "^7.16.2",
     "@react-navigation/native": "^7.2.5",
     "@react-navigation/native-stack": "^7.16.0",
     "@tanstack/react-query": "^5.101.0",
     "axios": "^1.17.0",
     "expo": "~56.0.9",
+<<<<<<< HEAD
     "expo-auth-session": "~56.0.13",
     "expo-linear-gradient": "~56.0.4",
     "expo-linking": "~56.0.13",
@@ -17,14 +21,24 @@
     "expo-secure-store": "~56.0.4",
     "expo-status-bar": "~56.0.4",
     "expo-web-browser": "~56.0.5",
+=======
+    "expo-localization": "~56.0.6",
+    "expo-secure-store": "~56.0.4",
+    "expo-status-bar": "~56.0.4",
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
     "i18next": "^26.3.1",
     "react": "19.2.3",
     "react-i18next": "^17.0.8",
     "react-native": "0.85.3",
+<<<<<<< HEAD
     "react-native-gesture-handler": "~2.31.1",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "4.25.2",
     "react-native-svg": "15.15.4",
+=======
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "4.25.2",
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
     "zustand": "^5.0.14"
   },
   "scripts": {
@@ -33,9 +47,13 @@
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
+<<<<<<< HEAD
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "babel-preset-expo": "^56.0.14"
   }
+=======
+  "private": true
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
 }

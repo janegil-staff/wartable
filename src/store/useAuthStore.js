@@ -13,6 +13,7 @@ export const useAuthStore = create((set) => ({
   hydrate: async () => {
     try {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
+<<<<<<< HEAD
       set({ token: token ?? null });
       if (token) {
         try {
@@ -23,17 +24,26 @@ export const useAuthStore = create((set) => ({
       }
     } catch {}
     set({ ready: true });
+=======
+      set({ token: token ?? null, ready: true });
+    } catch {
+      set({ ready: true });
+    }
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
   },
 
   signInWithToken: async (token, user) => {
     try { await SecureStore.setItemAsync(TOKEN_KEY, token); } catch {}
     set({ token, user, role: user?.role ?? null });
+<<<<<<< HEAD
     // Best-effort: pull the real account (battletag, characters) from /auth/me.
     try {
       const { default: client } = await import("../api/client");
       const { data } = await client.get("/auth/me");
       if (data) set({ user: data, role: data.role ?? user?.role ?? null });
     } catch {}
+=======
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
   },
 
   continueManual: (role) => set({ user: { id: "guest", role }, role }),
@@ -44,6 +54,7 @@ export const useAuthStore = create((set) => ({
     try { await SecureStore.deleteItemAsync(TOKEN_KEY); } catch {}
     set({ user: null, token: null, role: null });
   },
+<<<<<<< HEAD
 
   // Permanently delete the account on the backend, then sign out locally.
   deleteAccount: async () => {
@@ -54,4 +65,6 @@ export const useAuthStore = create((set) => ({
     try { await SecureStore.deleteItemAsync(TOKEN_KEY); } catch {}
     set({ user: null, token: null, role: null });
   },
+=======
+>>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
 }));
