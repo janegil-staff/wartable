@@ -1,20 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import React from "react";
+import { StatusBar } from "expo-status-bar";
+import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./src/i18n";
+import { ThemeProvider, useTheme } from "./src/theme/ThemeContext";
+import RootNavigator from "./src/navigation/RootNavigator";
 
-export default function App() {
+const queryClient = new QueryClient();
+
+function NavWithTheme() {
+  const { theme } = useTheme();
+  const base = theme.mode === "dark" ? DarkTheme : DefaultTheme;
+  const navTheme = { ...base, colors: { ...base.colors, background: theme.bg, card: theme.surface, text: theme.text, border: theme.border, primary: theme.accent } };
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer theme={navTheme}>
+      <StatusBar style={theme.mode === "dark" ? "light" : "dark"} />
+      <RootNavigator />
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <NavWithTheme />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
+  );
+}
