@@ -93,5 +93,7 @@
   "officer": "Officier",
   "rank": "Rang",
   "shareFailed": "Échec de création du code. Touchez Générer.",
-  "perDungeon": "Par donjon"
+  "perDungeon": "Par donjon",
+  "searchRoster": "Rechercher nom, classe ou rang",
+  "noMatches": "Aucun membre ne correspond à votre recherche."
 }

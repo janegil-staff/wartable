@@ -93,5 +93,7 @@
   "officer": "Officier",
   "rank": "Rang",
   "shareFailed": "Kon geen code maken. Tik op Genereren.",
-  "perDungeon": "Per kerker"
+  "perDungeon": "Per kerker",
+  "searchRoster": "Zoek naam, klasse of rang",
+  "noMatches": "Geen leden komen overeen met je zoekopdracht."
 }

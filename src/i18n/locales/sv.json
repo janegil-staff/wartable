@@ -93,5 +93,7 @@
   "officer": "Officer",
   "rank": "Rang",
   "shareFailed": "Kunde inte skapa kod. Tryck Generera.",
-  "perDungeon": "Per dungeon"
+  "perDungeon": "Per dungeon",
+  "searchRoster": "Sök namn, klass eller rang",
+  "noMatches": "Inga medlemmar matchar din sökning."
 }

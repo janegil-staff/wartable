@@ -93,5 +93,7 @@
   "officer": "Officer",
   "rank": "Rank",
   "shareFailed": "Couldn't create a code. Tap Generate to retry.",
-  "perDungeon": "Per dungeon"
+  "perDungeon": "Per dungeon",
+  "searchRoster": "Search name, class or rank",
+  "noMatches": "No members match your search."
 }

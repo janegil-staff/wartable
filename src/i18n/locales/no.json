@@ -93,5 +93,7 @@
   "officer": "Offiser",
   "rank": "Rang",
   "shareFailed": "Kunne ikke lage kode. Trykk Generer for å prøve igjen.",
-  "perDungeon": "Per fangehull"
+  "perDungeon": "Per fangehull",
+  "searchRoster": "Søk navn, klasse eller rang",
+  "noMatches": "Ingen medlemmer samsvarer med søket."
 }

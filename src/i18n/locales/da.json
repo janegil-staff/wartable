@@ -93,5 +93,7 @@
   "officer": "Officer",
   "rank": "Rang",
   "shareFailed": "Kunne ikke lave kode. Tryk Generer.",
-  "perDungeon": "Per dungeon"
+  "perDungeon": "Per dungeon",
+  "searchRoster": "Søg navn, klasse eller rang",
+  "noMatches": "Ingen medlemmer matcher din søgning."
 }

@@ -93,5 +93,7 @@
   "officer": "Ufficiale",
   "rank": "Grado",
   "shareFailed": "Impossibile creare il codice. Tocca Genera.",
-  "perDungeon": "Per dungeon"
+  "perDungeon": "Per dungeon",
+  "searchRoster": "Cerca nome, classe o grado",
+  "noMatches": "Nessun membro corrisponde alla ricerca."
 }

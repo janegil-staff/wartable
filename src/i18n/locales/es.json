@@ -93,5 +93,7 @@
   "officer": "Oficial",
   "rank": "Rango",
   "shareFailed": "No se pudo crear el código. Toca Generar.",
-  "perDungeon": "Por mazmorra"
+  "perDungeon": "Por mazmorra",
+  "searchRoster": "Buscar nombre, clase o rango",
+  "noMatches": "Ningún miembro coincide con tu búsqueda."
 }

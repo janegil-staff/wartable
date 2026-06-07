@@ -93,5 +93,7 @@
   "officer": "Upseeri",
   "rank": "Arvo",
   "shareFailed": "Koodin luonti epäonnistui. Napauta Luo.",
-  "perDungeon": "Per luolasto"
+  "perDungeon": "Per luolasto",
+  "searchRoster": "Hae nimi, luokka tai arvo",
+  "noMatches": "Yksikään jäsen ei vastaa hakuasi."
 }

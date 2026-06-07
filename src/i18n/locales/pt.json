@@ -93,5 +93,7 @@
   "officer": "Oficial",
   "rank": "Posto",
   "shareFailed": "Não foi possível criar o código. Toca em Gerar.",
-  "perDungeon": "Por masmorra"
+  "perDungeon": "Por masmorra",
+  "searchRoster": "Pesquisar nome, classe ou patente",
+  "noMatches": "Nenhum membro corresponde à sua pesquisa."
 }

@@ -93,5 +93,7 @@
   "officer": "Oficer",
   "rank": "Ranga",
   "shareFailed": "Nie udało się utworzyć kodu. Dotknij Generuj.",
-  "perDungeon": "Na loch"
+  "perDungeon": "Na loch",
+  "searchRoster": "Szukaj imienia, klasy lub rangi",
+  "noMatches": "Żaden członek nie pasuje do wyszukiwania."
 }

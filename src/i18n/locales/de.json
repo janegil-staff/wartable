@@ -93,5 +93,7 @@
   "officer": "Offizier",
   "rank": "Rang",
   "shareFailed": "Code fehlgeschlagen. Tippe auf Generieren.",
-  "perDungeon": "Pro Verlies"
+  "perDungeon": "Pro Verlies",
+  "searchRoster": "Name, Klasse oder Rang suchen",
+  "noMatches": "Keine Mitglieder entsprechen deiner Suche."
 }
