@@ -6,13 +6,9 @@ import * as SecureStore from "expo-secure-store";
 
 // TODO: point at your backend (DigitalOcean / Render). Use an env/app.config
 // value in production rather than hard-coding.
-<<<<<<< HEAD
 // Dev: iOS simulator can reach the host machine's localhost directly.
 // Android emulator → http://10.0.2.2:4000 ; physical device → your LAN IP.
 export const API_BASE_URL = "http://localhost:4000";
-=======
-export const API_BASE_URL = "https://api.wartable.app";
->>>>>>> 31a729d889a7d29a1b45562a6a1883bfdc545076
 
 export const TOKEN_KEY = "wartable_token";
 
