@@ -160,6 +160,20 @@ function ItemDetailModal({ item, theme, t, onClose }) {
               </Text>
             ) : null}
 
+            {/* upgrade track */}
+            {item.upgrade ? (
+              <Text
+                style={{
+                  color: theme.accent,
+                  fontSize: 12,
+                  fontWeight: "700",
+                  marginBottom: 8,
+                }}
+              >
+                {item.upgrade}
+              </Text>
+            ) : null}
+
             {/* primary stats */}
             {primaries.length ? (
               <View style={[styles.itemBlock, { borderColor: theme.border }]}>
@@ -257,6 +271,54 @@ function ItemDetailModal({ item, theme, t, onClose }) {
               </View>
             ) : null}
 
+            {/* set name + pieces + bonuses */}
+            {item.set ? (
+              <View style={[styles.itemBlock, { borderColor: theme.border }]}>
+                <Text style={styles.itemBlockLabel(theme)}>
+                  {item.set.name || t("set") || "Set"}
+                  {item.set.displayCount ? ` · ${item.set.displayCount}` : ""}
+                </Text>
+                {(item.set.items ?? []).map((si, i) => (
+                  <Text
+                    key={i}
+                    style={{
+                      color: si.equipped ? theme.text : theme.textMuted,
+                      fontSize: 13,
+                      paddingVertical: 1,
+                    }}
+                    numberOfLines={1}
+                  >
+                    {si.equipped ? "✓ " : "• "}
+                    {si.name}
+                  </Text>
+                ))}
+                {(item.set.effects ?? []).map((ef, i) => (
+                  <Text
+                    key={`eff-${i}`}
+                    style={{
+                      color: ef.active
+                        ? theme.success || "#1eff00"
+                        : theme.textMuted,
+                      fontSize: 13,
+                      paddingVertical: 2,
+                      marginTop: i === 0 ? 4 : 0,
+                    }}
+                  >
+                    {ef.text}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+
+            {/* transmog appearance */}
+            {item.transmog ? (
+              <View style={[styles.itemBlock, { borderColor: theme.border }]}>
+                <Text style={{ color: "#ff80ff", fontSize: 13 }}>
+                  {t("transmogTo") || "Transmogrified to"}: {item.transmog}
+                </Text>
+              </View>
+            ) : null}
+
             {/* footer detail */}
             {item.requirement || item.durability || item.sellPrice ? (
               <View style={{ marginTop: 4 }}>
@@ -289,7 +351,7 @@ function ItemDetailModal({ item, theme, t, onClose }) {
   );
 }
 
-// Gear grid + item list, each item tappable. Shared by Overview and GearTab.
+// Gear grid (clickable icons only — list removed). Shared by Overview and GearTab.
 export function GearContent({ c, theme, t }) {
   const [selected, setSelected] = React.useState(null);
   const items = c.equipment ?? [];
@@ -320,36 +382,6 @@ export function GearContent({ c, theme, t }) {
                 <Text style={styles.gearIlvlText}>{it.ilvl}</Text>
               </View>
             ) : null}
-          </Pressable>
-        ))}
-      </View>
-      <View style={{ marginTop: 12, gap: 6 }}>
-        {items.map((it, i) => (
-          <Pressable
-            key={i}
-            onPress={() => setSelected(it)}
-            style={[styles.row, { borderBottomColor: theme.border }]}
-          >
-            <Text
-              style={{
-                color: QUALITY_COLOR[it.quality] ?? theme.text,
-                flex: 1,
-                fontWeight: "600",
-              }}
-              numberOfLines={1}
-            >
-              {it.name}
-            </Text>
-            {it.ilvl ? (
-              <Text style={{ color: theme.textMuted, fontWeight: "700" }}>
-                {it.ilvl}
-              </Text>
-            ) : null}
-            <Ionicons
-              name="chevron-forward"
-              size={14}
-              color={theme.textMuted}
-            />
           </Pressable>
         ))}
       </View>
@@ -576,7 +608,7 @@ export function OverviewTab({ c, theme, t, onOpenGuild }) {
         </Section>
       ) : null}
 
-      {/* GEAR — inline, tappable items, placed right before reputations */}
+      {/* GEAR — inline, tappable icons, placed right before reputations */}
       {c.equipment?.length ? (
         <Section
           theme={theme}

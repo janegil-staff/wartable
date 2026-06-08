@@ -1,8 +1,8 @@
 // src/components/CharacterShowcase.jsx — visual showcase.
 // Hero: full character render as backdrop, class-colored name, ilvl badge.
-// Below: gear grid with real item icons, Mythic+, raid progress.
-import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+// Below: gear grid with real item icons (tappable -> detail modal), Mythic+, raid progress.
+import React, { useState } from "react";
+import { View, Text, Image, StyleSheet, Dimensions, Pressable, Modal, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../theme/ThemeContext";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ const { width } = Dimensions.get("window");
 export default function CharacterShowcase({ c }) {
   const { theme } = useTheme();
   const { t } = useTranslation();
+  const [selected, setSelected] = useState(null);
   if (!c) return null;
   const fac = factionTheme(c.faction);
   const cc = classColor(c.class);
@@ -70,11 +71,19 @@ export default function CharacterShowcase({ c }) {
         <Stat theme={theme} label={t("achievements")} value={c.achievementPoints ?? "—"} />
       </View>
 
-      {/* GEAR grid with icons */}
+      {/* GEAR grid with icons — tap a cell to open detail */}
       <Section theme={theme} icon="shield-half" title={t("gear")}>
         <View style={styles.gearGrid}>
           {(c.equipment ?? []).map((it, i) => (
-            <View key={i} style={[styles.gearCell, { borderColor: QUALITY_COLOR[it.quality] ?? theme.border, backgroundColor: theme.bg }]}>
+            <Pressable
+              key={i}
+              onPress={() => setSelected(it)}
+              style={({ pressed }) => [
+                styles.gearCell,
+                { borderColor: QUALITY_COLOR[it.quality] ?? theme.border, backgroundColor: theme.bg },
+                pressed ? { opacity: 0.7 } : null,
+              ]}
+            >
               {it.icon ? (
                 <Image source={{ uri: it.icon }} style={styles.gearIcon} />
               ) : (
@@ -85,7 +94,7 @@ export default function CharacterShowcase({ c }) {
                   <Text style={styles.gearIlvlText}>{it.ilvl}</Text>
                 </View>
               ) : null}
-            </View>
+            </Pressable>
           ))}
         </View>
       </Section>
@@ -121,7 +130,106 @@ export default function CharacterShowcase({ c }) {
           ))}
         </Section>
       ) : null}
+
+      {/* GEAR DETAIL MODAL */}
+      <GearDetailModal
+        theme={theme}
+        t={t}
+        item={selected}
+        onClose={() => setSelected(null)}
+      />
     </View>
+  );
+}
+
+function GearDetailModal({ theme, t, item, onClose }) {
+  const visible = !!item;
+  const it = item ?? {};
+  const qColor = QUALITY_COLOR[it.quality] ?? theme.text;
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+      <Pressable style={styles.backdrop} onPress={onClose}>
+        <Pressable style={[styles.modalCard, { backgroundColor: theme.surface, borderColor: theme.border }]} onPress={() => {}}>
+          {/* header */}
+          <View style={styles.modalHeader}>
+            {it.icon ? (
+              <Image source={{ uri: it.icon }} style={[styles.modalIcon, { borderColor: qColor }]} />
+            ) : (
+              <View style={[styles.modalIcon, { backgroundColor: theme.surfaceAlt, borderColor: qColor }]} />
+            )}
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.modalName, { color: qColor }]} numberOfLines={3}>
+                {it.name ?? t("gear")}
+              </Text>
+              {it.slot ? <Text style={{ color: theme.textMuted, fontSize: 13 }}>{it.slot}</Text> : null}
+            </View>
+            <Pressable hitSlop={12} onPress={onClose}>
+              <Ionicons name="close" size={24} color={theme.textMuted} />
+            </Pressable>
+          </View>
+
+          <ScrollView style={{ maxHeight: 460 }} contentContainerStyle={{ paddingBottom: 12 }}>
+            {/* ilvl + binding */}
+            <View style={[styles.modalBlock, { borderBottomColor: theme.border }]}>
+              {it.ilvl ? <Text style={{ color: "#e6cc80", fontWeight: "800", fontSize: 15 }}>{t("itemLevel")} {it.ilvl}</Text> : null}
+              {it.binding ? <Text style={{ color: theme.textMuted, fontSize: 13 }}>{it.binding}</Text> : null}
+              {it.itemType ? <Text style={{ color: theme.text, fontSize: 13 }}>{it.itemType}</Text> : null}
+            </View>
+
+            {/* stats */}
+            {Array.isArray(it.stats) && it.stats.length ? (
+              <View style={[styles.modalBlock, { borderBottomColor: theme.border }]}>
+                {it.stats.map((s, i) => (
+                  <Text key={i} style={{ color: s.isNegative ? theme.danger ?? "#ff6b6b" : theme.text, fontSize: 14, marginBottom: 2 }}>
+                    {typeof s === "string" ? s : s.display ?? `${s.value ?? ""} ${s.type ?? ""}`.trim()}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+
+            {/* sockets / gems */}
+            {Array.isArray(it.sockets) && it.sockets.length ? (
+              <View style={[styles.modalBlock, { borderBottomColor: theme.border }]}>
+                <Text style={[styles.modalLabel, { color: theme.accent }]}>{t("sockets") ?? "Sockets"}</Text>
+                {it.sockets.map((s, i) => (
+                  <Text key={i} style={{ color: s.gem ? "#1eff00" : theme.textMuted, fontSize: 13, marginBottom: 2 }}>
+                    ◇ {typeof s === "string" ? s : s.gem ?? s.display ?? s.type ?? "Empty Socket"}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+
+            {/* effects / procs */}
+            {Array.isArray(it.effects) && it.effects.length ? (
+              <View style={[styles.modalBlock, { borderBottomColor: theme.border }]}>
+                {it.effects.map((e, i) => (
+                  <Text key={i} style={{ color: "#1eff00", fontSize: 13, marginBottom: 4, lineHeight: 18 }}>
+                    {typeof e === "string" ? e : e.display ?? e.description ?? ""}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+
+            {/* transmog */}
+            {it.transmog ? (
+              <View style={[styles.modalBlock, { borderBottomColor: theme.border }]}>
+                <Text style={{ color: "#ff80ff", fontSize: 13 }}>{it.transmog}</Text>
+              </View>
+            ) : null}
+
+            {/* requirement / durability / sell */}
+            {(it.requirement || it.durability || it.sellPrice) ? (
+              <View style={styles.modalBlock}>
+                {it.requirement ? <Text style={{ color: theme.textMuted, fontSize: 13 }}>{it.requirement}</Text> : null}
+                {it.durability ? <Text style={{ color: theme.textMuted, fontSize: 13 }}>{it.durability}</Text> : null}
+                {it.sellPrice ? <Text style={{ color: theme.textMuted, fontSize: 13 }}>{it.sellPrice}</Text> : null}
+              </View>
+            ) : null}
+          </ScrollView>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -167,4 +275,12 @@ const styles = StyleSheet.create({
   gearIcon: { ...StyleSheet.absoluteFillObject, width: "100%", height: "100%" },
   gearIlvl: { backgroundColor: "rgba(0,0,0,0.7)", paddingHorizontal: 2 },
   gearIlvlText: { color: "#fff", fontSize: 9, fontWeight: "800", textAlign: "center" },
+  // modal
+  backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "flex-end" },
+  modalCard: { borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 1, paddingHorizontal: 18, paddingTop: 18, paddingBottom: 24, maxHeight: "85%" },
+  modalHeader: { flexDirection: "row", alignItems: "flex-start", gap: 12, marginBottom: 14 },
+  modalIcon: { width: 52, height: 52, borderRadius: 10, borderWidth: 2 },
+  modalName: { fontSize: 18, fontWeight: "800" },
+  modalBlock: { paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },
+  modalLabel: { fontSize: 12, fontWeight: "800", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 },
 });
